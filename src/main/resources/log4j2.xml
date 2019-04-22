@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	%d{yyyy-MM-dd HH:mm:ss.SSS} : 日志创建时间
+	%p : 日志级别 : TRACE DEBUG INFO WARN ERROR FATAL
+	%c : logger的名称，如果logger未定义名称，默认是类名，即C%
+	%C : 包名 + 类名，如果是%C{2}，从后往前取2段，如%C=com.datahome.controller.TestController，%C{2}=controller.TestController
+	%M : 日志输出所在方法名
+	%m : 日志内容，即 logger.info("message")
+	%L : 日志输出所在行数
+	%n : 换行符
+	%X : MDC/ThreadContext，可以通过配置拦截器、过滤器等注入相应的参数，如客户端ip、session中的用户信息等
+	%t : 输出产生该日志事件的线程名
+-->
+<!--
+	status : 这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,会看到log4j2内部各种详细输出
+	monitorInterval : Log4j能够自动检测修改配置文件和重新配置本身, 设置间隔秒数
+-->
+<Configuration status="warn" monitorInterval="600">
+
+    <Properties>
+        <Property name="logHome">/tmp/datahome2/log</Property>
+        <Property name="pattern">[datahome] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%X{ip}] [%p] [%t] [%C] [%M] [%L] --> %m%n</Property>
+    </Properties>
+
+
+    <Appenders>
+        <!-- 控制台输出端 -->
+        <Console name="console" target="system_out">
+            <PatternLayout pattern="${pattern}"/>
+        </Console>
+
+        <!-- datahome输出端 -->
+        <RollingRandomAccessFile name="datahomeFile" immediateFlush="true" fileName="${logHome}/datahome.log" filePattern="${logHome}/datahome.log.%d{yyyyMMdd}.gz">
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="accept" onMismatch="deny"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+                 <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <!-- 系统输出端 -->
+        <RollingRandomAccessFile name="serviceFile" immediateFlush="true" fileName="${logHome}/service.log" filePattern="${logHome}/service_%d{yyyyMMdd}.log">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="accept" onMismatch="deny"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+                 <SizeBasedTriggeringPolicy size="1 KB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- warn以上级别的除com.datahome包的日志由控制台和系统输出 -->
+        <Root level="warn">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="serviceFile"/>
+        </Root>
+
+        <!-- debug以上级别的com.datahome的日志由控制台和datahome输出 -->
+        <Logger name="com.datahome" level="debug" includeLocation="true" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="datahomeFile" level="info"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>

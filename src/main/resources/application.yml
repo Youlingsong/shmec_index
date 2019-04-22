@@ -1,0 +1,72 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:postgresql://www.mackson.xyz/shmec_age06_index
+#    username: postgres
+#    password: 3071185577AABB
+    url: jdbc:postgresql://192.168.1.221/shmec_age06_index
+    username: root
+    password: datahome123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      #等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      connection-timeout: 10000
+      #一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+      idle-timeout: 600000
+      minimum-idle: 10
+      #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+      maximum-pool-size: 50
+      # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟
+      max-lifetime: 6000
+      connection-test-query: select 1
+      #连接只读数据库时配置为true， 保证安全
+      read-only: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+        show_sql: false
+    hibernate:
+      use-new-id-generator-mappings: true
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+  aop:
+    auto: true
+    proxy-target-class: false
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/web/,file:${upload.baseFilePath}
+  mvc:
+    favicon:
+      enabled: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  profiles:
+    active: dev
+
+  #缓存
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+
+logging:
+  config: classpath:log4j2.xml
+
+server:
+  port: 8480
+  servlet:
+    context-path: /home
+upload:
+  #资源上传的根目录
+  baseFilePath: I:/tmp/
+threadpool:
+  core-pool-size: 0
+  max-pool-size: 16
+  queue-capacity: 64
+  keep-alive-seconds: 60
+  rejectedExecutionHandler: java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy
