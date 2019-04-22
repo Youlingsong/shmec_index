@@ -15,6 +15,7 @@ public class GdnMiddleDataUtil {
             sql += " and i.remake like :remake ";
             params.put("remake", "%" + gdnMiddleDataModel.getRemake()+ "%");
         }
+
         return sql;
     }
 }
