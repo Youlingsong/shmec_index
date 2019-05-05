@@ -20,7 +20,7 @@ public interface IndexDao {
 
     List<IndexEntity> finds_by_ids_unitsId_indexName(List<Integer> ids, Integer unitsId, String indexName);
 
-    List<IndexCityEntity> findIndexCity_by_cityId_cityStatus_indexId_indexStatus(Integer cityId, String cityStatus, Integer indexId, String indexStatus);
+    List<IndexCityEntity> findIndexCity_by_cityId_indexId(Integer cityId, Integer indexId);
 
     void saveIndexCity(IndexCityEntity indexCityEntity);
 

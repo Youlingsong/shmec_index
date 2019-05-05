@@ -20,9 +20,6 @@ public class GdnMiddleDataEntity {
     private String id;
 
     @Column(length = 200)
-    private String key;
-
-    @Column(length = 200)
     private Integer value;
 
     //备注
@@ -40,6 +37,12 @@ public class GdnMiddleDataEntity {
     @JoinColumn(name = "middledataruleid")
     private GdnMiddleDataRuleEntity gdnMiddleDataRuleEntity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "databatchid")
+    private GdnDataBatchEntity gdnDataBatchEntity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cityid")
+    private GdnCityEntity gdnCityEntity;
 
 }

@@ -54,7 +54,7 @@ public class GdnMiddleDataServiceImpl implements GdnMiddleDataService {
 	@Override
 	public String finds(GdnMiddleDataBean gdnMiddleDataBean) {
 		//jpa模糊查询
-		List<GdnMiddleDataEntity> gdnMiddleDataEntities = gdnMiddleDataDao.findByRemakeLike("%"+gdnMiddleDataBean.getRemake()+"%");
+		List<GdnMiddleDataEntity> gdnMiddleDataEntities = gdnMiddleDataDao.finds(gdnMiddleDataBean);
 		return CommonUtil.format(2000, gdnMiddleDataEntities);
 	}
 }

@@ -96,11 +96,11 @@ public class IndexDaoImpl implements IndexDao {
     }
 
     @Override
-    public List<IndexCityEntity> findIndexCity_by_cityId_cityStatus_indexId_indexStatus(Integer cityId, String cityStatus, Integer indexId, String indexStatus) {
+    public List<IndexCityEntity> findIndexCity_by_cityId_indexId(Integer cityId, Integer indexId) {
         String hql = " from IndexCityEntity where 1=1  ";
 
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-        hql = IndexUtil.findIndexCitySql(hql, cityId, cityStatus, indexId, indexStatus, params);
+        hql = IndexUtil.findIndexCitySql(hql, cityId, indexId, params);
 
         Query query = entityManager.createQuery(hql);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -108,6 +108,8 @@ public class IndexDaoImpl implements IndexDao {
         }
         return query.getResultList();
     }
+
+
 
     @Override
     public void saveIndexCity(IndexCityEntity indexCityEntity) {

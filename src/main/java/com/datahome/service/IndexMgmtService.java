@@ -1,6 +1,7 @@
 package com.datahome.service;
 
 import com.datahome.bean.IndexMgmtBean;
+import com.datahome.bean.IndexTestBean;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,4 +29,6 @@ public interface IndexMgmtService {
     String exportExcelIndex(IndexMgmtBean indexMgmtBean, HttpServletResponse response);
 
     String delete(IndexMgmtBean indexMgmtBean);
+
+    String saveT(IndexTestBean indexTestBean) throws Exception;
 }

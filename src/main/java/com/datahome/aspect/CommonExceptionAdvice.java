@@ -38,6 +38,12 @@ public class CommonExceptionAdvice {
         if ("MaxUploadSizeExceededException".equals(errorClassesName)) {
             resultMessage = "文件过大，请重新分配！";
         }
+        if("PSQLException".equals(errorClassesName)){
+            resultMessage = "sql有误,请确认！";
+        }
+        if("DataIntegrityViolationException".equals(errorClassesName)){
+            resultMessage = "sql唯一约束执行有误,请确认！";
+        }
         return CommonUtil.format(5000, resultMessage);
     }
 }

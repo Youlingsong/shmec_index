@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.datahome.bean.AccountMgmtBean;
 import com.datahome.entity.AccountEntity;
-import com.datahome.entity.CityEntity;
+import com.datahome.entity.GdnCityEntity;
 import com.datahome.entity.StaffEntity;
 import com.datahome.entity.StaffRoleEntity;
 import com.datahome.repository.AccountRepository;
-import com.datahome.repository.CityRepository;
+import com.datahome.repository.GdnCityRepository;
 import com.datahome.repository.IndexRepository;
 import com.datahome.service.AccountMgmtService;
 import com.datahome.util.AccountUtil;
@@ -34,7 +34,7 @@ public class AccountMgmtServiceImpl implements AccountMgmtService {
     private AccountRepository accountDao;
 
     @Resource
-    private CityRepository cityDao;
+    private GdnCityRepository cityDao;
 
     @Resource
     private IndexRepository indexDao;
@@ -90,7 +90,8 @@ public class AccountMgmtServiceImpl implements AccountMgmtService {
         }
 
         Optional<AccountEntity> optionalAccountEntity = accountDao.findById(accountBean.getId());
-        if (optionalAccountEntity == null) {
+
+        if (!optionalAccountEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
 
@@ -140,9 +141,11 @@ public class AccountMgmtServiceImpl implements AccountMgmtService {
         }
 
         Optional<AccountEntity> optionalAccountEntity = accountDao.findById(accountBean.getId());
-        if (optionalAccountEntity == null) {
+
+        if (!optionalAccountEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
+
 
         //用户基本信息
         AccountEntity accountEntity = optionalAccountEntity.get();
@@ -227,7 +230,7 @@ public class AccountMgmtServiceImpl implements AccountMgmtService {
 
         //城市数据校验
         if (cityIds != null && cityIds.size() != 0) {
-            List<CityEntity> cityEntities = cityDao.findALLByCityStatusAndIdIn("1", cityIds);
+            List<GdnCityEntity> cityEntities = cityDao.findALLByCityStatusAndIdIn("1", cityIds);
             if (cityEntities == null || cityEntities.size() != cityIds.size()) {
                 throw new RuntimeException(CommonUtil.format(4200, "城市数据异常！"));
             }
@@ -245,16 +248,16 @@ public class AccountMgmtServiceImpl implements AccountMgmtService {
         }
 
         //当前用户所属的城市Id
-        List<Integer> cityIds2 = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getCityEntity().getNodeIds(), Arrays.asList("1"));
+       // List<Integer> cityIds2 = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getCityEntity().getNodeIds(), Arrays.asList("1"));
         StaffRoleEntity staffRoleEntity2 = staffEntity.getStaffRoleEntity();
 
         //当前用户角色
         String roleKey2 = staffRoleEntity2.getRoleKey();
 
         //各个层级的管理员
-        if ("admin".equals(roleKey2) && cityIds2.containsAll(cityIds)) {
-            return true;
-        }
+//        if ("admin".equals(roleKey2) && cityIds2.containsAll(cityIds)) {
+//            return true;
+//        }
         return false;
     }
 }

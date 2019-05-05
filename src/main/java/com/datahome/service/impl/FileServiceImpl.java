@@ -77,9 +77,9 @@ public class FileServiceImpl implements FileService {
     public void download(HttpServletRequest request, HttpServletResponse response, FileBean fb) throws Exception {
         //获取资源存储路径
         String filePath = fb.getFilePath();
-        if (filePath == null) {
+        if (filePath != null) {
             //  return CommonUtil.format(4200, "filePath为null！");
-        }
+
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         String contextPath = request.getSession().getServletContext().getRealPath("/");
         OutputStream outputStream = null;
@@ -101,6 +101,6 @@ public class FileServiceImpl implements FileService {
         outputStream.flush();
         outputStream.close();
 
-
+        }
     }
 }

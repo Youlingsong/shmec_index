@@ -37,22 +37,14 @@ public class IndexUtil {
     }
 
 
-    public static String findIndexCitySql(String hql, Integer cityId, String cityStatus, Integer indexId, String indexStatus, LinkedHashMap<String, Object> params) {
+    public static String findIndexCitySql(String hql, Integer cityId, Integer indexId,  LinkedHashMap<String, Object> params) {
         if (indexId != null) {
             hql += " and indexId = :indexId ";
             params.put("indexId", indexId);
         }
         if (cityId != null) {
-            hql += " and cityEntity.id  = :cityId ";
+            hql += " and cityId  = :cityId ";
             params.put("cityId", cityId);
-        }
-        if (cityStatus != null) {
-            hql += " and cityEntity.cityStatus  = :cityStatus ";
-            params.put("cityStatus", cityStatus);
-        }
-        if (indexStatus != null) {
-            hql += " and indexEntity.indexStatus  = :indexStatus ";
-            params.put("indexStatus", indexStatus);
         }
         return hql;
     }

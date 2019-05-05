@@ -22,25 +22,26 @@ public class IndexDataEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // 指标与城市  中间表
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "indexCityid", nullable = false)
-    private IndexCityEntity indexCityEntity;
-
-//    // 数据来源
+//    // 指标与城市  中间表
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "departmentId")
-//    private DepartmentEntity departmentEntity;
+//    @JoinColumn(name = "indexCityid", nullable = false)
+//    private IndexCityEntity indexCityEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "databatchid",  nullable = false)
+    private GdnDataBatchEntity gdnDataBatchEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cityid" ,nullable = false)
+    private GdnCityEntity gdnCityEntity;
 
     @Column
     private Double value;
 
-    @Column(nullable = false)
-    private String year;
 
     // 指标数据状态(1 发布  2 草稿  3 无效数据 4 待审核)
     @Column(nullable = false)
-    private String indexDataStatus;
+    private String status;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date saveTime;

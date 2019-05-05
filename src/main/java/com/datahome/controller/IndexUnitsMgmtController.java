@@ -3,8 +3,11 @@ package com.datahome.controller;
 import com.datahome.bean.IndexUnitsMgmtBean;
 import com.datahome.group.IndexUnitsMgmtGroup;
 import com.datahome.service.IndexUnitsMgmtService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,7 @@ import javax.validation.groups.Default;
 
 @RestController
 @RequestMapping(value = "/mgmt/units")
+@Api("指标单位管理")
 public class IndexUnitsMgmtController {
 
     @Resource
@@ -31,7 +35,8 @@ public class IndexUnitsMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/save.do")
+    @PostMapping("/save.do")
+    @ApiOperation("新增指标单位")
     public String save(@Validated({Default.class, IndexUnitsMgmtGroup.save.class}) IndexUnitsMgmtBean indexUnitsMgmtBean, BindingResult bindingResult) {
         return indexUnitsMgmtService.save(indexUnitsMgmtBean);
     }
@@ -43,7 +48,8 @@ public class IndexUnitsMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/find.do")
+    @PostMapping("/find.do")
+    @ApiOperation("查询单条信息")
     public String find(@Validated({Default.class, IndexUnitsMgmtGroup.find.class}) IndexUnitsMgmtBean indexUnitsMgmtBean, BindingResult bindingResult) {
         return indexUnitsMgmtService.find(indexUnitsMgmtBean);
     }
@@ -55,7 +61,8 @@ public class IndexUnitsMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/finds.do")
+    @PostMapping("/finds.do")
+    @ApiOperation("查询列表(所有指标单位并不是条件查询)")
     public String finds(@Validated({Default.class, IndexUnitsMgmtGroup.finds.class}) IndexUnitsMgmtBean indexUnitsMgmtBean, BindingResult bindingResult) {
         return indexUnitsMgmtService.finds(indexUnitsMgmtBean);
     }
@@ -67,7 +74,8 @@ public class IndexUnitsMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/update.do")
+    @PostMapping("/update.do")
+    @ApiOperation("修改指标单位")
     public String update(@Validated({Default.class, IndexUnitsMgmtGroup.update.class}) IndexUnitsMgmtBean indexUnitsMgmtBean, BindingResult bindingResult) {
         return indexUnitsMgmtService.update(indexUnitsMgmtBean);
     }
@@ -79,7 +87,8 @@ public class IndexUnitsMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/delete.do")
+    @PostMapping("/delete.do")
+    @ApiOperation("删除指标单位")
     public String delete(@Validated({Default.class, IndexUnitsMgmtGroup.delete.class}) IndexUnitsMgmtBean indexUnitsMgmtBean, BindingResult bindingResult) {
         return indexUnitsMgmtService.delete(indexUnitsMgmtBean);
     }

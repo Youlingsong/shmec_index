@@ -2,9 +2,9 @@ package com.datahome.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.datahome.entity.AccountEntity;
-import com.datahome.entity.CityEntity;
+import com.datahome.entity.GdnCityEntity;
 import com.datahome.entity.IndexEntity;
-import com.datahome.repository.CityRepository;
+import com.datahome.repository.GdnCityRepository;
 import com.datahome.repository.IndexRepository;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class AccountUtil {
 
 
     @Resource
-    private CityRepository cityDao;
+    private GdnCityRepository cityDao;
 
     @Resource
     private IndexRepository indexDao;
@@ -63,7 +63,7 @@ public class AccountUtil {
     //获取用户所有的可查看指标、所属城市
     public Map<String, Object> getCityAndAllowReadIndexs(AccountEntity accountEntity, Map<String, Object> resultMap) {
 
-        //查询用户 可查看的指标
+       // 查询用户 可查看的指标
         String allowRead = accountEntity.getAllowReadIndexs();
         if (allowRead != null && !"".equals(allowRead)) {
             List<Integer> allowReadIdList = JSONArray.parseArray(allowRead, Integer.class);
@@ -81,13 +81,13 @@ public class AccountUtil {
         String citys = accountEntity.getCityIds();
         if (citys != null && !"".equals(citys)) {
             List<Integer> cityIds = JSONArray.parseArray(citys, Integer.class);
-            List<CityEntity> cityEntitys = cityDao.findALLByCityStatusAndIdIn("1", cityIds);
-            for (CityEntity cityEntity : cityEntitys) {
+            List<GdnCityEntity> cityEntitys = cityDao.findALLByCityStatusAndIdIn("1", cityIds);
+            for (GdnCityEntity cityEntity : cityEntitys) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("cityId", cityEntity.getId());
                 map.put("cityName", cityEntity.getCityName());
                 map.put("cityStatus", cityEntity.getCityStatus());
-                map.put("parentId", cityEntity.getParentId());
+               // map.put("parentId", cityEntity.getParentId());
                 resultCitys.add(map);
             }
         }

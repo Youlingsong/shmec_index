@@ -4,7 +4,6 @@ import com.datahome.bean.IndexDataMgmtBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.concurrent.Future;
 
 /**
  * @Author xl
@@ -19,7 +18,7 @@ public interface IndexDataMgmtService {
 
     String update(IndexDataMgmtBean indexDataMgmtBean);
 
-    Future<String> saveIndexData(IndexDataMgmtBean indexDataMgmtBean);
+    String saveIndexData(IndexDataMgmtBean indexDataMgmtBean);
 
     String exportExcelData(IndexDataMgmtBean indexDataMgmtBean, HttpServletRequest request, HttpServletResponse response);
 

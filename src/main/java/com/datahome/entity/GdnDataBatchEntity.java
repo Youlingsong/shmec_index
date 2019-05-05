@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Setter
@@ -27,4 +28,8 @@ public class GdnDataBatchEntity {
     //日
     @Column(nullable = false)
     private String day;
+
+    //创建时间
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createTime;
 }

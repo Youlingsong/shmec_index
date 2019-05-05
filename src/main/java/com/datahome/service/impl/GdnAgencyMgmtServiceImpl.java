@@ -6,8 +6,10 @@ import com.datahome.repository.GdnAgencyMgmtRepository;
 import com.datahome.service.GdnAgencyMgmtService;
 import com.datahome.util.CommonUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,5 +56,11 @@ public class GdnAgencyMgmtServiceImpl implements GdnAgencyMgmtService {
     public String finds(GdnAgencyMgmtBean gdnAgencyMgmtBean) {
         List<GdnAgencyEntity> gdnAgencyEntities = gdnAgencyMgmtDao.findby_name_district_Level(gdnAgencyMgmtBean);
         return CommonUtil.format(2000, gdnAgencyEntities);
+    }
+
+    @Override
+    public String importExcel(MultipartFile file, HttpServletResponse response) {
+
+        return null;
     }
 }

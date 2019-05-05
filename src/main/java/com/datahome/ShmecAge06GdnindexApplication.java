@@ -8,7 +8,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 //开启异步调用方法
 @EnableAsync
@@ -16,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ServletComponentScan({"com.datahome.filter", "com.datahome.listener"})
 @EnableJpaRepositories(repositoryFactoryBeanClass = BaseDaoFactoryBean.class)
 //开启定时任务
-@EnableScheduling
+//@EnableScheduling
 public class ShmecAge06GdnindexApplication extends SpringBootServletInitializer {
 
     static {

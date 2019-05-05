@@ -11,7 +11,7 @@ import java.sql.*;
 public class JDBCUtil {
 
     static final String DRIVER = "org.postgresql.Driver";
-    static final String url = "jdbc:postgresql://192.168.1.221/shmec_age06_index";
+    static final String url = "jdbc:postgresql://192.168.1.221/shmec_age06_gdnindex";
     static final String user = "root";
     static final String password = "datahome123";
 

@@ -1,7 +1,6 @@
 package com.datahome.controller;
 
 import com.datahome.bean.GdnMiddleDataRuleBean;
-import com.datahome.group.GdnMiddleDataGroup;
 import com.datahome.group.GdnMiddleDataRuleGroup;
 import com.datahome.service.GdnMiddleDataRuleService;
 import io.swagger.annotations.Api;
@@ -31,7 +30,7 @@ public class GdnMiddleDataRuleController {
      */
     @ApiOperation("新增中间数计算规则")
     @PostMapping("/save.do")
-    public String save(@Validated({Default.class, GdnMiddleDataGroup.save.class}) GdnMiddleDataRuleBean gdnMiddleDataRuleBean, BindingResult bindingResult) throws Exception {
+    public String save(@Validated({Default.class, GdnMiddleDataRuleGroup.save.class}) GdnMiddleDataRuleBean gdnMiddleDataRuleBean, BindingResult bindingResult) throws Exception {
         return gdnMiddleDataRuleService.save(gdnMiddleDataRuleBean);
     }
 

@@ -156,7 +156,9 @@ public class IndexDataDaoImpl implements IndexDataDao {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             try {
-                connection.rollback();
+                if (connection != null) {
+                    connection.rollback();
+                }
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }

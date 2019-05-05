@@ -1,6 +1,7 @@
 package com.datahome.service.impl;
 
 import com.datahome.bean.IndexMgmtBean;
+import com.datahome.bean.IndexTestBean;
 import com.datahome.entity.*;
 import com.datahome.repository.*;
 import com.datahome.service.IndexMgmtService;
@@ -26,7 +27,7 @@ import java.util.*;
 public class IndexMgmtServiceImpl implements IndexMgmtService {
 
     @Resource
-    private CityRepository cityDao;
+    private GdnCityRepository gdncityDao;
 
     @Resource
     private IndexUnitsRepository indexUnitsDao;
@@ -52,6 +53,11 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
     @Resource
     private IndexCityReposstory IndexCityDao;
 
+    @Resource
+    private GdnMiddleDataRepository gdnMiddledataDao;
+
+
+
 
     //新增指标
     @Override
@@ -59,9 +65,9 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
     public String save(IndexMgmtBean indexMgmtBean) throws Exception {
 
         //用户角色校验
-        if (!isAdministrator()) {
-            return CommonUtil.format(4200, "无权操作！");
-        }
+//        if (!isAdministrator()) {
+//            return CommonUtil.format(4200, "无权操作！");
+//        }
 
         //获取参数
         Integer parentId = indexMgmtBean.getParentId();
@@ -98,9 +104,11 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
 
         //指标计量单位
         Optional<IndexUnitsEntity> optionalIndexUnitsEntity = indexUnitsDao.findById(indexUnitsId);
-        if (optionalIndexUnitsEntity == null) {
-            return CommonUtil.format(4200, "计量单位错误！");
+
+        if (!optionalIndexUnitsEntity.isPresent()) {
+            return CommonUtil.format(4200, "查无数据！");
         }
+
 
         //指标分组
         List<IndexGroupEntity> indexGroupEntities = null;
@@ -395,7 +403,7 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
              for (IndexEntity indexEntity : byIdOrodeIdorparentid) {
                  //根据指标id,删除指标数据(indexdata)
                  List<IndexCityEntity> indexCityEntities = null;
-                 indexCityEntities = indexDao.findIndexCity_by_cityId_cityStatus_indexId_indexStatus(null, null, indexEntity.getId(), null);
+                // indexCityEntities = indexDao.findIndexCity_by_cityId_indexId(null, null, indexEntity.getId(), null);
                  if (CommonUtil.isEmptyList(indexCityEntities)) {
                      for (IndexCityEntity indexCityEntity : indexCityEntities) {
                          indexDataDao.delete_by_indexcityid(indexCityEntity);
@@ -412,6 +420,147 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
              }
          }
         return CommonUtil.format(2000, "删除体系成功！");
+    }
+
+    //新增指标
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String saveT(IndexTestBean indexTestBean) throws Exception {
+        //获取参数
+        Integer parentId = indexTestBean.getParentId();
+        Integer indexUnitsId = indexTestBean.getUnitsId();
+        String indexStatus = indexTestBean.getIndexStatus();
+        String name = indexTestBean.getName();
+        String description = indexTestBean.getDescription();
+        String evaluationStandards = indexTestBean.getEvaluationStandards();
+        List<Integer> groupIds = indexTestBean.getGroupId();
+        Double grossScore = indexTestBean.getGrossScore();
+        //计算规则
+        String operator = indexTestBean.getOperator();
+        //中间数id
+        List<String> middleDataIds = indexTestBean.getMiddleDataId();
+
+        List<GdnMiddleDataEntity> listGdnMiddleDataEntits = gdnMiddledataDao.findByIdIn(middleDataIds);
+        if (listGdnMiddleDataEntits == null || listGdnMiddleDataEntits.size() != middleDataIds.size()) {
+            return CommonUtil.format(4200, "中间数集合错误！");
+        }
+
+        String nodeIds = "";
+        //父级指标检验
+        boolean nodeIdUpdateFlag = false;
+        IndexEntity index = null;
+        if (parentId != 0) {
+            Optional<IndexEntity> optionalIndexEntity = indexDao.findById(parentId);
+            if (!optionalIndexEntity.isPresent()) {
+                return CommonUtil.format(4200, "父级指标错误！");
+            }
+            index = optionalIndexEntity.get();
+            //如果父指标无效，则子指标也改为无效
+            if ("2".equals(index.getIndexStatus())) {
+                indexStatus = "2";
+            }
+            nodeIdUpdateFlag = true;
+        }
+
+        //校验 指标名称是否存在
+        List<IndexEntity> entities = indexDao.finds_by_ids_unitsId_indexName(null, null, name);
+        if (entities != null && entities.size() > 0) {
+            return CommonUtil.format(4200, "指标名称已存在！");
+        }
+
+        //指标计量单位
+        Optional<IndexUnitsEntity> optionalIndexUnitsEntity = indexUnitsDao.findById(indexUnitsId);
+
+        if (!optionalIndexUnitsEntity.isPresent()) {
+            return CommonUtil.format(4200, "查无数据！");
+        }
+
+
+        //指标分组
+        List<IndexGroupEntity> indexGroupEntities = null;
+        if (groupIds != null) {
+            indexGroupEntities = indexGroupDao.findByIdIn(groupIds);
+            if (indexGroupEntities == null || indexGroupEntities.size() != groupIds.size()) {
+                return CommonUtil.format(4200, "指标分组错误！");
+            }
+        }
+
+        //实例化
+        IndexEntity indexEntity = new IndexEntity();
+        indexEntity.setIndexUnitsEntity(optionalIndexUnitsEntity.get());
+        indexEntity.setIndexStatus(indexStatus);
+        indexEntity.setParentId(parentId);
+        indexEntity.setName(name);
+        indexEntity.setDescription(description);
+        indexEntity.setEvaluationStandards(evaluationStandards);
+        indexEntity.setSaveTime(new Date());
+        indexEntity.setGrossScore(grossScore);
+        indexDao.save(indexEntity);
+
+        //添加指标数据
+        //直接利用中间数据,不用进行计算
+        if(listGdnMiddleDataEntits.size()==1){
+            GdnMiddleDataEntity gdnMiddleDataEntity = listGdnMiddleDataEntits.get(0);
+            IndexDataEntity indexDataEntity = new IndexDataEntity();
+            CommonUtil.exchangeObj(gdnMiddleDataEntity,indexDataEntity);
+            indexDataEntity.setSaveTime(new Date());
+            indexDataEntity.setUpdateTime(new Date());
+            indexDataEntity.setStatus("1");
+            indexDataEntity.setValue(Double.valueOf((gdnMiddleDataEntity.getValue())));
+            indexDataDao.save(indexDataEntity);
+        }
+        //经过运算符运算
+        if(listGdnMiddleDataEntits.size()==2){
+            GdnMiddleDataEntity gdnMiddleDataEntity = listGdnMiddleDataEntits.get(0);
+            GdnMiddleDataEntity gdnMiddleDataEntity1 = listGdnMiddleDataEntits.get(1);
+            if(gdnMiddleDataEntity.getGdnCityEntity().getId()!=gdnMiddleDataEntity1.getGdnCityEntity().getId()){
+                return CommonUtil.format(2000, "不是同地域数据,不可以进行运算");
+            }
+            if(gdnMiddleDataEntity.getGdnDataBatchEntity().getId()!=gdnMiddleDataEntity1.getGdnDataBatchEntity().getId()){
+                return CommonUtil.format(2000, "不是同批次数据,不可以进行运算");
+            }
+            IndexDataEntity indexDataEntity = new IndexDataEntity();
+            CommonUtil.exchangeObj(gdnMiddleDataEntity,indexDataEntity);
+            indexDataEntity.setSaveTime(new Date());
+            indexDataEntity.setUpdateTime(new Date());
+            indexDataEntity.setStatus("1");
+            if("+".equals(operator)){
+                indexDataEntity.setValue(Double.valueOf((gdnMiddleDataEntity.getValue()+gdnMiddleDataEntity1.getValue())));
+            }else if("-".equals(operator)){
+                indexDataEntity.setValue(Double.valueOf((gdnMiddleDataEntity.getValue()-gdnMiddleDataEntity1.getValue())));
+            }
+            else if("*".equals(operator)){
+                indexDataEntity.setValue(Double.valueOf((gdnMiddleDataEntity.getValue()*gdnMiddleDataEntity1.getValue())));
+            }
+            else if("/".equals(operator)){
+                indexDataEntity.setValue(Double.valueOf((gdnMiddleDataEntity.getValue())/Double.valueOf((gdnMiddleDataEntity1.getValue()))));
+            }
+            indexDataDao.save(indexDataEntity);
+        }
+        //修改指标的nodeIds
+        if (nodeIdUpdateFlag) {
+            nodeIds = index.getNodeIds() + "," + indexEntity.getId();
+        } else {
+            nodeIds = indexEntity.getId().toString();
+        }
+        indexEntity.setNodeIds(nodeIds);
+        indexDao.save(indexEntity);
+
+        //添加指标_城市
+//        String result = saveIndexCityOrDepartment(indexEntity);
+//        if (!"SUCCESS".equals(result)) {
+//            return result;
+//        }
+
+        //添加指标_分组
+        if (indexGroupEntities != null) {
+           String result = saveIndex_group(indexEntity, indexGroupEntities);
+            if (!"SUCCESS".equals(result)) {
+                return result;
+            }
+        }
+
+        return CommonUtil.format(2000, "添加成功！");
     }
 
     // 获取指标的相关信息
@@ -460,19 +609,19 @@ public class IndexMgmtServiceImpl implements IndexMgmtService {
         List<IndexCityEntity> datas = new ArrayList<>();
 
         //获取地区 实例
-        List<CityEntity> cityEntityList = cityDao.findByCityStatus("1");
+        List<GdnCityEntity> cityEntityList = gdncityDao.findByCityStatus("1");
         if (cityEntityList == null || cityEntityList.size() == 0) {
             throw new Exception("请先添加市、区县数据！");
         }
 
         //添加指标与地区的中间表
-        for (CityEntity cityEntity : cityEntityList) {
-            List<IndexCityEntity> list = indexDao.findIndexCity_by_cityId_cityStatus_indexId_indexStatus(cityEntity.getId(), null, indexEntity.getId(), null);
+        for (GdnCityEntity cityEntity : cityEntityList) {
+            List<IndexCityEntity> list = indexDao.findIndexCity_by_cityId_indexId(cityEntity.getId(),  indexEntity.getId());
             if (list != null && list.size() > 0) {
                 throw new Exception(" 在<" + cityEntity.getCityName() + ">这个区域中存在重复指标！");
             }
             indexCityEntity = new IndexCityEntity();
-            indexCityEntity.setCityEntity(cityEntity);
+            indexCityEntity.setGdncityEntity(cityEntity);
             indexCityEntity.setIndexEntity(indexEntity);
             indexCityEntity.setSaveTime(new Date());
             indexDao.saveIndexCity(indexCityEntity);

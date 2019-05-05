@@ -10,4 +10,6 @@ public interface GdnMiddleDataRepository extends BaseDao<GdnMiddleDataEntity,Str
 
 
     List<GdnMiddleDataEntity> findByRemakeLike(String s);
+
+    List<GdnMiddleDataEntity> findByIdIn(List<String> middleDataIds);
 }

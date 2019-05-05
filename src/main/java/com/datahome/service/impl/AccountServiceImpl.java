@@ -64,15 +64,17 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String find(AccountBean accountBean) {
         Optional<AccountEntity> optionalAccountEntity = accountDao.findById(accountBean.getId());
-        if (optionalAccountEntity == null) {
-            return CommonUtil.format(4200, "查无数据！");
+
+        if (!optionalAccountEntity.isPresent()) {
+            return CommonUtil.format(4200, "查无数据");
         }
 
         //用户基本信息
         AccountEntity accountEntity = optionalAccountEntity.get();
         Map<String, Object> resultMap = accountUtil.getAccountEntityMap(accountEntity);
+        return CommonUtil.format(2000,resultMap);
 
-        return CommonUtil.format(2000, accountUtil.getCityAndAllowReadIndexs(accountEntity, resultMap));
+      //  return CommonUtil.format(2000, accountUtil.getCityAndAllowReadIndexs(accountEntity, resultMap));
     }
 
     // 修改用户密码

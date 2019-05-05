@@ -3,6 +3,7 @@ package com.datahome.controller;
 import com.datahome.bean.IndexBean;
 import com.datahome.group.IndexGroup;
 import com.datahome.service.IndexService;
+import io.swagger.annotations.Api;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,16 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.groups.Default;
 
-/**
- * @Author xl
- * @Description: 前台指标查询
- * @Date: Create in 2018/5/18 9:11
- */
 
 @RestController
+@Api("指标体系管理")
 @RequestMapping(value = "/index")
-public class IndexController {
-
+public class GdnIndexController {
 
     @Resource
     private IndexService indexService;

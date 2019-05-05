@@ -45,7 +45,7 @@ public class StaffEntity implements Serializable {
     // 地域
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cityId", nullable = false)
-    private CityEntity cityEntity;
+    private GdnCityEntity gdncityEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roleId", nullable = false)

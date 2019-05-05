@@ -1,12 +1,12 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://www.mackson.xyz/shmec_age06_index
-    username: postgres
-    password: 3071185577AABB
-#    url: jdbc:postgresql://192.168.1.221/shmec_age06_index
-#    username: root
-#    password: datahome123
+#    url: jdbc:postgresql://www.mackson.xyz/shmec_age06_index
+#    username: postgres
+#    password: 3071185577AABB
+    url: jdbc:postgresql://192.168.1.221/shmec_age06_gdnindex
+    username: root
+    password: datahome123
     driver-class-name: org.postgresql.Driver
     hikari:
       #等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒

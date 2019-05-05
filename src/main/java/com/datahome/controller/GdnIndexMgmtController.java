@@ -1,6 +1,7 @@
 package com.datahome.controller;
 
 import com.datahome.bean.IndexMgmtBean;
+import com.datahome.bean.IndexTestBean;
 import com.datahome.group.IndexMgmtGroup;
 import com.datahome.middledata.IndexModel;
 import com.datahome.service.IndexMgmtService;
@@ -23,7 +24,7 @@ import java.util.List;
 @RestController
 @Api("指标体系管理")
 @RequestMapping(value = "/mgmt/index")
-public class IndexMgmtController {
+public class GdnIndexMgmtController {
 
     @Resource
     private IndexMgmtService indexMgmtService;
@@ -36,10 +37,26 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/save.do")
+    @ApiOperation("新增指标")
+    @PostMapping("/save.do")
     public String save(@Validated({Default.class, IndexMgmtGroup.save.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) throws Exception {
         return indexMgmtService.save(indexMgmtBean);
     }
+
+
+    /**
+     * 中间数转化指标测试
+     *
+     * @param
+     * @param bindingResult
+     * @return
+     */
+    @ApiOperation("中间数转化指标测试")
+    @PostMapping("/saveT.do")
+    public String saveT(@Validated({Default.class, IndexMgmtGroup.save.class}) IndexTestBean indexTestBean, BindingResult bindingResult) throws Exception {
+        return indexMgmtService.saveT(indexTestBean);
+    }
+
 
     /**
      * 查询单条
@@ -48,7 +65,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/find.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/find.do")
     public String find(@Validated({Default.class, IndexMgmtGroup.find.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) {
         return indexMgmtService.find(indexMgmtBean);
     }
@@ -60,7 +78,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/finds.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/finds.do")
     public String finds(@Validated({Default.class, IndexMgmtGroup.finds.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) {
         return indexMgmtService.finds(indexMgmtBean);
     }
@@ -72,7 +91,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/update.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/update.do")
     public String update(@Validated({Default.class, IndexMgmtGroup.update.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) throws Exception {
         return indexMgmtService.update(indexMgmtBean);
     }
@@ -84,7 +104,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/combox.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/combox.do")
     public String combox(@Validated({Default.class, IndexMgmtGroup.combox.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) {
         return indexMgmtService.combox(indexMgmtBean);
     }
@@ -96,7 +117,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/findAllIndex.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/findAllIndex.do")
     public String findALlIndex(@Validated({Default.class, IndexMgmtGroup.findALlIndex.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) {
         return indexMgmtService.findALlIndex(indexMgmtBean);
     }
@@ -108,7 +130,8 @@ public class IndexMgmtController {
      * @param bindingResult
      * @return
      */
-    @RequestMapping("/exportExcel.do")
+    @ApiOperation("导出excel格式的数据")
+    @PostMapping("/exportExcel.do")
     public String exportExcel(HttpServletResponse response, @Validated({Default.class, IndexMgmtGroup.exportExcel.class}) IndexMgmtBean indexMgmtBean, BindingResult bindingResult) {
         return indexMgmtService.exportExcelIndex(indexMgmtBean, response);
     }

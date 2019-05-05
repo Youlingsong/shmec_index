@@ -29,7 +29,7 @@ public class IndexCityEntity implements Serializable {
     // 地域
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cityid")
-    private CityEntity cityEntity;
+    private GdnCityEntity gdncityEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date saveTime;

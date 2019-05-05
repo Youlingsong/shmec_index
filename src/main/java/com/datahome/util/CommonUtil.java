@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -556,6 +557,19 @@ public class CommonUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Integer dealsql(String sqlsentence) throws SQLException, ClassNotFoundException {
+        int value=0;
+        Connection sqlConnection = null;
+        PreparedStatement pre = null;
+        ResultSet resultSet = null;
+            sqlConnection= JDBCUtil.getSqlConnection();
+            pre = sqlConnection.prepareStatement(sqlsentence);
+            resultSet = pre.executeQuery();
+            while (resultSet != null && resultSet.next()) { value = resultSet.getInt("value");
+        }
+        return value;
     }
 
 

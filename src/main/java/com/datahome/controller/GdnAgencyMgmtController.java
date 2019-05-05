@@ -10,9 +10,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
 
 
@@ -21,7 +24,7 @@ import javax.validation.groups.Default;
 @RequestMapping(value = "/mgmt/gdnAgency")
 public class GdnAgencyMgmtController {
     @Resource
-    private GdnAgencyMgmtService  gdnAgencyMgmtService;
+    private GdnAgencyMgmtService gdnAgencyMgmtService;
 
 
     /**
@@ -53,5 +56,12 @@ public class GdnAgencyMgmtController {
     @PostMapping("/finds.do")
     public String finds(@Validated({Default.class, GdnAgencyMgmtGroup.finds.class}) GdnAgencyMgmtBean gdnAgencyMgmtBean, BindingResult bindingResult) throws Exception {
         return gdnAgencyMgmtService.finds(gdnAgencyMgmtBean);
+    }
+
+    @ApiOperation("批量导入机构基础数据")
+    @PostMapping("/importExcel.do")
+    public String importExcel(HttpServletResponse response, @RequestParam("importExcel") MultipartFile file
+    ) throws Exception {
+        return gdnAgencyMgmtService.importExcel(file, response);
     }
 }

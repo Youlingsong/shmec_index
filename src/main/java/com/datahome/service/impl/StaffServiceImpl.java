@@ -1,9 +1,10 @@
 package com.datahome.service.impl;
 
 import com.datahome.bean.StaffBean;
+import com.datahome.entity.GdnCityEntity;
 import com.datahome.entity.StaffEntity;
 import com.datahome.entity.StaffRoleEntity;
-import com.datahome.repository.CityRepository;
+import com.datahome.repository.GdnCityRepository;
 import com.datahome.repository.StaffRepository;
 import com.datahome.service.StaffService;
 import com.datahome.util.CommonUtil;
@@ -28,7 +29,7 @@ public class StaffServiceImpl implements StaffService {
     private StaffRepository staffDao;
 
     @Resource
-    private CityRepository cityDao;
+    private GdnCityRepository cityDao;
 
     @Resource
     private HttpSession session;
@@ -86,6 +87,12 @@ public class StaffServiceImpl implements StaffService {
         if (staffDao.findByName(name) != null) {
             return CommonUtil.format(4200, " 该用户名已被占用！");
         }
+
+        Optional<GdnCityEntity> optionGdnCityEntity = cityDao.findById(cityId);
+        if (!optionGdnCityEntity.isPresent()) {
+            return CommonUtil.format(4200, "查无数据！");
+        }
+
         StaffEntity staffEntity = new StaffEntity();
         staffEntity.setName(name);
         staffEntity.setPassword(CommonUtil.encodeBase64(staffBean.getPassword()));
@@ -93,7 +100,7 @@ public class StaffServiceImpl implements StaffService {
         staffEntity.setEmail(staffBean.getEmail());
         staffEntity.setStatus(staffBean.getStatus());
         staffEntity.setAdminFlag("2");
-        staffEntity.setCityEntity(cityDao.findById(cityId).get());
+        staffEntity.setGdncityEntity(optionGdnCityEntity.get());
         staffEntity.setStaffRoleEntity(staffRoleEntity);
         staffEntity.setSaveTime(new Date());
         staffDao.save(staffEntity);
@@ -117,8 +124,8 @@ public class StaffServiceImpl implements StaffService {
         if (staffEntity == null || (!"1".equals(staffEntity.getAdminFlag()) && !"admin".equals(staffEntity.getStaffRoleEntity().getRoleKey()))) {
             return CommonUtil.format(4200, " 无权查看！");
         }
-        List<Integer> cityIds = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getCityEntity().getNodeIds(), Arrays.asList("1"));
-        List<StaffEntity> staffEntities = staffDao.findsBy_cityIds_status(cityIds, staffBean.getStatus());
+      //  List<Integer> cityIds = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getGdncityEntity().getNodeIds(), Arrays.asList("1"));
+        List<StaffEntity> staffEntities = staffDao.findsBy_cityIds_status(null, staffBean.getStatus());
         List<Map<String, Object>> resultList = new ArrayList<>();
         for (StaffEntity staffEntity1 : staffEntities) {
             if ("admin".equals(staffEntity1.getStaffRoleEntity().getRoleKey()) && "2".equals(staffEntity.getAdminFlag()) && staffEntity.getId() != staffEntity1.getId()) {
@@ -151,7 +158,7 @@ public class StaffServiceImpl implements StaffService {
         }
 
         Optional<StaffEntity> optionalStaffEntity = staffDao.findById(staffBean.getId());
-        if (optionalStaffEntity == null) {
+        if (!optionalStaffEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
         StaffEntity staffEntity = optionalStaffEntity.get();
@@ -162,13 +169,18 @@ public class StaffServiceImpl implements StaffService {
             return CommonUtil.format(4200, " 该用户名已被占用！");
         }
 
+        Optional<GdnCityEntity> optionGdnCityEntity = cityDao.findById(cityId);
+        if (!optionGdnCityEntity.isPresent()) {
+            return CommonUtil.format(4200, "查无数据！");
+        }
+
         staffEntity.setName(staffName);
         staffEntity.setStatus(staffBean.getStatus());
         staffEntity.setPhone(staffBean.getPhone());
         staffEntity.setEmail(staffBean.getEmail());
         staffEntity.setAdminFlag("2");
         staffEntity.setStaffRoleEntity(staffRoleEntity);
-        staffEntity.setCityEntity(cityDao.findById(cityId).get());
+        staffEntity.setGdncityEntity(optionGdnCityEntity.get());
         staffEntity.setUpdateTime(new Date());
         //修改
         staffDao.save(staffEntity);
@@ -182,13 +194,15 @@ public class StaffServiceImpl implements StaffService {
 
         //查询数据
         Optional<StaffEntity> optionalStaffEntity = staffDao.findById(staffBean.getId());
-        if (optionalStaffEntity == null) {
+
+        if (!optionalStaffEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
+
         StaffEntity staffEntity = optionalStaffEntity.get();
 
         //权限校验
-        if (!checkAdmin(staffEntity.getCityEntity().getId(), staffEntity.getStaffRoleEntity())) {
+        if (!checkAdmin(staffEntity.getGdncityEntity().getId(), staffEntity.getStaffRoleEntity())) {
             return CommonUtil.format(4200, " 无权操作！");
         }
 
@@ -219,7 +233,9 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public String updateMyselfInfo(StaffBean staffBean) {
         Optional<StaffEntity> optionalStaffEntity = staffDao.findById(staffBean.getId());
-        if (optionalStaffEntity == null) {
+
+
+        if (!optionalStaffEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
         StaffEntity staffEntity = optionalStaffEntity.get();
@@ -262,16 +278,17 @@ public class StaffServiceImpl implements StaffService {
 
         //查询数据
         Optional<StaffEntity> optionalStaffEntity = staffDao.findById(staffBean.getId());
-        if (optionalStaffEntity == null) {
+        if (!optionalStaffEntity.isPresent()) {
             return CommonUtil.format(4200, "查无数据！");
         }
+
         if ("1".equals(optionalStaffEntity.get().getAdminFlag())) {
             return CommonUtil.format(4200, "无法删除超级管理员账号！");
         }
         StaffEntity staffEntity = optionalStaffEntity.get();
 
         //权限校验
-        if (!checkAdmin(staffEntity.getCityEntity().getId(), staffEntity.getStaffRoleEntity())) {
+        if (!checkAdmin(staffEntity.getGdncityEntity().getId(), staffEntity.getStaffRoleEntity())) {
             return CommonUtil.format(4200, " 无权新增用户！");
         }
 
@@ -292,8 +309,8 @@ public class StaffServiceImpl implements StaffService {
             map.put("email", staffEntity.getEmail());
             map.put("roleKey", staffEntity.getStaffRoleEntity().getRoleKey());
             map.put("roleId", staffEntity.getStaffRoleEntity().getId());
-            map.put("cityName", staffEntity.getCityEntity().getCityName());
-            map.put("cityId", staffEntity.getCityEntity().getId());
+            map.put("cityName", staffEntity.getGdncityEntity().getCityName());
+            map.put("cityId", staffEntity.getGdncityEntity().getId());
             map.put("savetime", staffEntity.getSaveTime());
         }
         return map;
@@ -312,17 +329,17 @@ public class StaffServiceImpl implements StaffService {
             return true;
         }
         //管理员不能新增同等级城市的管理员
-        if ("admin".equals(staffRoleEntity.getRoleKey()) && cityId == staffEntity.getCityEntity().getId()) {
+        if ("admin".equals(staffRoleEntity.getRoleKey()) && cityId == staffEntity.getGdncityEntity().getId()) {
             return false;
         }
 
-        //当前用户所属的城市Id
-        List<Integer> cityIds2 = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getCityEntity().getNodeIds(), Arrays.asList("1"));
-
-        //各个层级的管理员
-        if ("admin".equals(roleKey2) && cityIds2.contains(cityId)) {
-            return true;
-        }
+//        //当前用户所属的城市Id
+//        List<Integer> cityIds2 = cityDao.findAllChildrenIdBy_nodeIds_cityStatus(staffEntity.getGdncityEntity(), Arrays.asList("1"));
+//
+//        //各个层级的管理员
+//        if ("admin".equals(roleKey2) && cityIds2.contains(cityId)) {
+//            return true;
+//        }
         return false;
     }
 }

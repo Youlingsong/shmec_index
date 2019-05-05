@@ -24,4 +24,6 @@ public class RegexUtil {
     public static final String COMMON_STATUS_CODE = "^(1|2)$";
 
     public static final String IDCARD = "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$";
+
+    public static final String COMMON_OPERATOR = "^[-+*/]$";
 }

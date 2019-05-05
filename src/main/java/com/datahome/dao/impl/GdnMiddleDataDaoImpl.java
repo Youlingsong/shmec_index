@@ -1,8 +1,8 @@
 package com.datahome.dao.impl;
 
+import com.datahome.bean.GdnMiddleDataBean;
 import com.datahome.dao.GdnMiddleDataDao;
 import com.datahome.entity.GdnMiddleDataEntity;
-import com.datahome.middledata.GdnMiddleDataModel;
 import com.datahome.util.CommonUtil;
 import com.datahome.util.GdnMiddleDataUtil;
 import org.springframework.stereotype.Repository;
@@ -20,18 +20,18 @@ public class GdnMiddleDataDaoImpl  implements GdnMiddleDataDao {
     private EntityManager entityManager;
 
     @Override
-    public List<GdnMiddleDataEntity> findBykey_value_remake(GdnMiddleDataModel gdnMiddleDataModel) {
+    public List<GdnMiddleDataEntity> finds(GdnMiddleDataBean gdnMiddleDataBean) {
         String sql = "  select * from age06_gdn_middledata i where  1=1   ";
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
-        sql = GdnMiddleDataUtil.findGdnAgencySql(sql,gdnMiddleDataModel , params);
+        sql = GdnMiddleDataUtil.findGdnAgencySql(sql,gdnMiddleDataBean , params);
         //排序
-        sql = CommonUtil.orderCreate(sql, "ASC", gdnMiddleDataModel.getSort());
+        sql = CommonUtil.orderCreate(sql, "ASC", gdnMiddleDataBean.getSort());
         //Todo 记得修改实体类型
         Query query = entityManager.createNativeQuery(sql, GdnMiddleDataEntity.class);
 
         //分页
-        CommonUtil.page(query, gdnMiddleDataModel.getPageNumber(), gdnMiddleDataModel.getPageSize());
+        CommonUtil.page(query, gdnMiddleDataBean.getPageNumber(), gdnMiddleDataBean.getPageSize());
 
         //占位符
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -47,4 +47,6 @@ public class GdnMiddleDataDaoImpl  implements GdnMiddleDataDao {
             String sql = " delete from age06_gdn_middledata where 1=1 and middledataruleid = :middledataruleid";
             entityManager.createNativeQuery(sql).setParameter("middledataruleid", ruleid).executeUpdate();
     }
+
+
 }

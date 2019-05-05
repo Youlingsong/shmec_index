@@ -43,8 +43,8 @@ public class DomainSourceGenerator {
 			throw new RuntimeException(e);
 		}
 
-		domain = "GdnTaskScore";
-		domainID = "String";
+		domain = "GdnDataBatch";
+		domainID = "Integer";
 		home = prop.getProperty("home");
 		basePackageName = prop.getProperty("basePackageName");
 		domainFirstLower = this.getFirstLower(domain);
@@ -98,7 +98,7 @@ public class DomainSourceGenerator {
 	 */
 	@Test
 	public void generateRespositoryAnddaoAnddaoimp() throws Exception {
-		this.generateRespository();
+		//this.generateRespository();
 		this.generateDao();
 		this.generateDaoimpl();
 	}
@@ -240,5 +240,11 @@ public class DomainSourceGenerator {
 		writer.println("package "+ packageName +";");
 		writer.println("");
 		return writer;
+	}
+
+	public static void main(String[] args) {
+  String a="1";
+  String b="1";
+		System.out.println(a.equals(b));
 	}
 }

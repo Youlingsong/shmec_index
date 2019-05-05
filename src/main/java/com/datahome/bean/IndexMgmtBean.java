@@ -39,12 +39,6 @@ public class IndexMgmtBean {
     @NotNull(groups = {IndexMgmtGroup.save.class, IndexMgmtGroup.update.class})
     private Double grossScore;
 
-    private List<Integer> cityIdList;
-
-    private List<Integer> departmentIdList;
-
-    private String cityName;
-
     private String nodeIds;
 
     @NotNull(groups = {IndexMgmtGroup.save.class, IndexMgmtGroup.update.class})

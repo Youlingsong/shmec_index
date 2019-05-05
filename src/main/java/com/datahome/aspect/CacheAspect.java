@@ -106,7 +106,7 @@ public class CacheAspect {
                         //2 通过反射获取实体类属性
                         sb.append(getFieldsValue(arg));
                     }
-                    break;
+                  //  break;
                 }
             }
         }

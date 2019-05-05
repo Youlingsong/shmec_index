@@ -17,18 +17,12 @@ public class GdnMiddleDataRuleEntity {
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(unique = true, nullable = false, columnDefinition = "char(36)")
     private String id;
-    //key
-    @Column(length = 20)
-    private String key;
     //sql语句
-    @Column(length = 2000)
+    @Column(length = 2000,unique=true)
     private String sqlsentence;
     //规则名称
     @Column(length = 50)
     private String name;
-    //备注
-    @Column(length = 2000)
-    private String remarks;
     //创建时间
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;

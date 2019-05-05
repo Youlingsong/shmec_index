@@ -1,14 +1,15 @@
 package com.datahome.dao;
 
+import com.datahome.bean.GdnMiddleDataBean;
 import com.datahome.entity.GdnMiddleDataEntity;
-import com.datahome.middledata.GdnMiddleDataModel;
 
 import java.util.List;
 
 public interface GdnMiddleDataDao {
 
 
-    List<GdnMiddleDataEntity> findBykey_value_remake(GdnMiddleDataModel gdnMiddleDataModel);
+    List<GdnMiddleDataEntity>  finds(GdnMiddleDataBean gdnMiddleDataBean);
 
     void deleteby_ruleid(String ruleid);
+
 }

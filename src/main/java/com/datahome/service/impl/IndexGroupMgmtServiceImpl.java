@@ -92,7 +92,7 @@ public class IndexGroupMgmtServiceImpl implements IndexGroupMgmtService {
         String groupName = indexGroupMgmtBean.getGroupName();
 
         IndexGroupEntity indexGroupEntity1 = indexGroupDao.findByName(groupName);
-        if (indexGroupEntity1 != null && indexGroupEntity1.getId() != indexGroupEntity.getId()) {
+        if (indexGroupEntity1 != null && indexGroupEntity1.getId().equals(indexGroupEntity.getId())) {
             return CommonUtil.format(4200, "分组名称已存在！");
         }
 
